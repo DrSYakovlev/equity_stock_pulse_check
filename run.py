@@ -1,5 +1,6 @@
 import yfinance as yf
-#import csv
+import numpy as np
+
 
 def access_data():
     """
@@ -40,23 +41,49 @@ def calculate_ROI(current_price, historical_share_price):
     print(f'Today\'s ROI would be {return_on_investment}%')
     if return_on_investment <= 0:
         print("")
-        print('You are loosing money, ROI is below 0, not a good day to sell')
+        print('You are loosing money, ROI is below 0, not a good day to sell.\n')
     else:
-        print("The sell would be profitable, but do not forget to add the broker\'s commission to the bill")
+        print("")
+        print("The sell would be profitable, but do not forget to add the broker\'s commission to the bill\n")
     return return_on_investment
 
-def access_month_back():
-    one_month_historical_close = yf.download("IKA.L", period="1mo")['Close']
-    one_month_historical_volume = yf.download("IKA.L", period="1mo")['Volume']
-    print(one_month_historical_close)
-    print(one_month_historical_volume)
-    return one_month_historical_close, one_month_historical_volume
-
-def linear_extrapolation():
+def data_for_lin_fit():
     """
-    The function extrapolates linearly one-month (from now) share price and traded volume data and shows the trend (bullish or bearish).
+    The function selects the historical range of share price data for futher linear regression analysis.
     """
+    while True:
+        print("Enter the first (the earliest) date in the period you want to analyse. The date bust be entered in format yyyy-mm-dd (e.g. 2020-05-15)\n")
+        date1 = input()
+        print("Enter the second (the latest) date in the period you want to analyse. The date bust be entered in format yyyy-mm-dd (e.g. 2020-05-15)\n")
+        date2 = input()
+        days = np.busday_count(date1, date2)
 
+        if validate_period(days):
+            break
+    if days < 5:
+        print("The period is less than 5 days. The data is not enough for and the analysis may be unreliable. Suitable range is between 5 and 15 working days.\n")
+    if days > 20:
+        print("The selected period is long. The linear model may be disrupted by unpredictable events, such as dividend payment, company announcement, change of CEO and other major changes (consult www.ilika.com for the details).\n")
+    else:
+        print('Number of business days is:', days)
+        print("")
+        print ("Retrieving share price and volume data for the selected period...\n")
+    historical_range_close = yf.download("IKA.L", date1, date2, interval="1d")['Close']
+    historical_range_volume = yf.download("IKA.L", date1, date2, interval="1d")['Volume']
+    historical_range_close.to_csv('ilika_selected_range_close.csv')
+    historical_range_volume.to_csv('ilika_selected_range_volume.csv')
+
+def validate_period(time_span):
+    """
+    The function generates an error message if the number of working days in a required period is 0 or negative.
+    """
+    try:
+        if time_span <= 0:        
+            raise ValueError(f'Check your input. The number of working days in the period is 0 or negative')
+    except ValueError as e:
+        print(f"Invalid data: {e}, please try again.\n")
+        return False
+    return True    
 
 def main():
     """
@@ -65,10 +92,9 @@ def main():
     current_price = access_data()
     historical_share_price = historical_data()
     calculate_ROI(current_price, historical_share_price)
-    linear_extrapolation(access_month_back())
+    data_for_lin_fit()
 
-
-print("Welcome to the 'Equity Stock Pulse Check' project.\nThis little tool will calculate Return on Investment (ROI) for your share stock based on the date of acquisition and current share price.\nIt will also suggest cell/buy strategy deduced from five-day (tail) share price and traded volume extrapolation.\nDISCLAIMER: The algorithm does not take into account unpredictable events, such as breaking news or paiment of dividends.\nTHE RESULTS CANNOT BE TREATED AS A LEGAL FINANCIAL ADVICE.\n")
+print("Welcome to the 'Equity Stock Pulse Check' project.\nThis little tool will calculate Return on Investment (ROI) for your Ilika Technologies Ltd share stock based on the date of acquisition and current share price.\nIt will also suggest cell/buy strategy deduced from historical data range (defined by the user) of share price and traded volume extrapolation.\nDISCLAIMER: The algorithm does not take into account unpredictable events, such as breaking news or paiment of dividends.\nTHE RESULTS CANNOT BE TREATED AS A LEGAL FINANCIAL ADVICE.\n")
 
 
 print('Press Enter to continue...')
