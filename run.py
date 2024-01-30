@@ -1,5 +1,7 @@
 import yfinance as yf
 import numpy as np
+import pandas
+from scipy import stats
 
 
 def access_data():
@@ -63,7 +65,7 @@ def data_for_lin_fit():
     if days < 5:
         print("The period is less than 5 days. The data is not enough for and the analysis may be unreliable. Suitable range is between 5 and 15 working days.\n")
     if days > 20:
-        print("The selected period is long. The linear model may be disrupted by unpredictable events, such as dividend payment, company announcement, change of CEO and other major changes (consult www.ilika.com for the details).\n")
+        print("The selected period is long. The linear model may be disrupted by unpredictable events, such as dividend payment, company announcements, change of CEO and other major changes (consult www.ilika.com for the details).\n")
     else:
         print('Number of business days is:', days)
         print("")
@@ -85,6 +87,27 @@ def validate_period(time_span):
         return False
     return True    
 
+def linear_regr():
+    """
+    The function accesses files with the traded volume and closure share price for the period defined in function data_for_lin_fit() and converts it into the list format (suitable for linear regression analysis).
+    """
+    volume = pandas.read_csv("ilika_selected_range_volume.csv", header=0)
+    close = pandas.read_csv("ilika_selected_range_close.csv", header=0)
+    list_volume = list(volume.Volume)
+    list_close = list(close.Close)
+    i = 0
+    day_number = []
+    while i < len(list_volume):
+        i = i + 1
+        day_number.append(i)    
+    print(day_number)
+    slope_volume, intercept_volume, r_volume, p_volume, std_err_volume = stats.linregress(day_number, list_volume)
+    slope_close, intercept_close, r_close, p_close, std_err_close = stats.linregress(day_number, list_close)
+    print("slope_volume", slope_volume)
+    print("slope_close", slope_close)
+    print("r_volume", r_volume)
+    print("r_close", r_close)    
+
 def main():
     """
     Run all program functions
@@ -93,6 +116,8 @@ def main():
     historical_share_price = historical_data()
     calculate_ROI(current_price, historical_share_price)
     data_for_lin_fit()
+    linear_regr()
+
 
 print("Welcome to the 'Equity Stock Pulse Check' project.\nThis little tool will calculate Return on Investment (ROI) for your Ilika Technologies Ltd share stock based on the date of acquisition and current share price.\nIt will also suggest cell/buy strategy deduced from historical data range (defined by the user) of share price and traded volume extrapolation.\nDISCLAIMER: The algorithm does not take into account unpredictable events, such as breaking news or paiment of dividends.\nTHE RESULTS CANNOT BE TREATED AS A LEGAL FINANCIAL ADVICE.\n")
 
