@@ -81,6 +81,13 @@ Prior to importing modules, external libraries had to be installed. This was per
 The code was deployed om Heroku platform, following instructions provided in CI scope video. The deployed application can be found here:
 https://equity-stock-pulse-check-84925993fa4c.herokuapp.com/
 
+The deployment required the following steps:
+
+1. Create new app on Heroku.
+2. Set buildpacks (Python and NodeJS).
+3. Set PORT to 8000 in the config var section.
+4. Link Heroku with GitHub repo.
+5. Deploy (Automatic deployment option was selected).
         
 ## Credits
 
