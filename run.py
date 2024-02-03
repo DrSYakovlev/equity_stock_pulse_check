@@ -53,18 +53,21 @@ def data_for_lin_fit():
     The function selects the historical range of share price data for futher linear regression analysis.
     """
     while True:
-        date1 = input("Enter the first (the earliest) date in the period you want to analyse.\nThe date must be entered in format yyyy-mm-dd (e.g. 2020-05-15).\nEnterring incorrect date may result in a program crash.\nThe program will issue an error message if you enter the latest date first.\n")
-        date2 = input("Enter the second (the latest) date in the period you want to analyse.\nThe date must be entered in format yyyy-mm-dd (e.g. 2020-05-15).\nEnterring incorrect date may result in a program crash.\nThe program will issue an error message if you enter the starting date instead.\n")
+        print("Enter the first (the earliest) date in the period you want to analyse.\nThe date must be entered in format yyyy-mm-dd (e.g. 2020-05-15).\nEnterring incorrect date may result in a program crash.\nThe program will issue an error message if you enter the latest date first.")
+        date1 = input("\n")
+        print("")
+        print("Enter the second (the latest) date in the period you want to analyse.\nThe date must be entered in format yyyy-mm-dd (e.g. 2020-05-15).\nEnterring incorrect date may result in a program crash.\nThe program will issue an error message if you enter the starting date instead.")
+        date2 = input("\n")
         days = np.busday_count(date1, date2)
+        print("")
         print(f"Specified period includes {days} market days.\n")
         if validate_period(days):
             break
     if days < 5:
-        print("The period is less than 5 days. The data are not enough and the analysis may be unreliable.\nSuitable range is between 5 and 15 working days.\n")
+        print("The period is less than 5 days.\nThe data are not enough and the analysis may be unreliable.\nSuitable range is between 5 and 15 working days.\n")
     if days > 20:
-        print("The selected period is long. The linear model may be disrupted by unpredictable events,\nsuch as dividend payment, company announcements, change of CEO and other major changes (consult www.ilika.com for the details).\n")
+        print("The selected period is long.\nThe linear model may be disrupted by unpredictable events,\nsuch as dividend payment, company announcements,\nchange of CEO and other major changes\n(consult www.ilika.com for the details).\n")
     else:
-        print('Number of business days in the period is:', days)
         print("")
         print("Retrieving share price and volume data for the selected period...\n")
     historical_range_close = yf.download("IKA.L", date1, date2, interval="1d")['Close']
@@ -102,15 +105,15 @@ def linear_regr():
     if r_close_abs >= 0.7:
         print(f"Correlation coefficient is {r_close_abs}.\nFor numbers above 0.7 the model can be trusted.\nExtracting model parameters...\n")
         if slope_close <= 0:
-            print("The market is bearish. Buying is not recommended")
+            print("The market is bearish.\nBuying is not recommended")
         else:
-            print("The market is bullish. Selling is not recommended")
+            print("The market is bullish.\nSelling is not recommended")
     else:
-        print("Linear correlation is poor. Correlation coefficient is below 0.7.\nThe results are not trustable. Proceed with caution.\n")
+        print("Linear correlation is poor.\nCorrelation coefficient is below 0.7.\nThe results are not trustable.\nProceed with caution.\n")
         if slope_close <= 0:
-            print("The market is bearish. Buying is not recommended, but the linear model is not suitable and other parameters must be checked.\n")
+            print("The market is bearish.\nBuying is not recommended,\nbut the linear model is not suitable\nand other parameters must be checked.\n")
         else:
-            print("The market is bullish. Selling is not recommended, but the linear model is not suitable and other parameters must be checked.\n")
+            print("The market is bullish.\nSelling is not recommended,\nbut the linear model is not suitable\nand other parameters must be checked.\n")
 
 
 def stay_or_exit():
