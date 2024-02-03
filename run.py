@@ -1,5 +1,4 @@
 print("Starting the program...\n")
-
 #Importing necessary modules and libraries:
 import yfinance as yf
 import numpy as np
@@ -7,14 +6,16 @@ import pandas
 import sys
 from scipy import stats
 
+
 def access_data():
     """
     This function accesses the current share price of Ilica plc.
     """
-    ticker = yf.Ticker('IKA.L').info    
+    ticker = yf.Ticker('IKA.L').info
     current_price = ticker['regularMarketPreviousClose']
     print(f'Current Ilika share price is...{current_price} p\n')
     return current_price
+
 
 def historical_data():
     """
@@ -23,15 +24,16 @@ def historical_data():
     acquisition_day = input('Enter the date of stock aquisition.\nThe date must be provided in a format  YYYY-MM-DD (e.g. 2024-01-05).\nEnterring incorrect data may result in a program crash.\n')
     print("Retrieving share price on that day...\n")
     acuisition_day_price = yf.download("IKA.L", 2010-5-14, acquisition_day)
-    csv_export = acuisition_day_price.tail()  
+    csv_export = acuisition_day_price.tail()
     csv_export.to_csv("ilika.csv")
     with open("ilika.csv", "r", encoding="utf-8", errors="ignore") as temp:
-        final_line = temp.readlines()[-1]        
+        final_line = temp.readlines()[-1]
     final_line = final_line.split(",")
     historical_share_price = float(final_line[5])
-    print(f"Historical share price on the acquisition day {acquisition_day} is {int(historical_share_price)} p.\n")
-    return historical_share_price    
-    
+    print(f"Share price on {acquisition_day} is {int(historical_share_price)} p.\n")
+    return historical_share_price
+
+
 def calculate_ROI(current_price, historical_share_price):
     """
     The function calculates return on investment (ROI) from share price on the day of acquisition and todays price
@@ -43,7 +45,8 @@ def calculate_ROI(current_price, historical_share_price):
         print('You are loosing money, ROI is below 0, not a good day to sell.\n')
     else:
         print("")
-        print("The sell would be profitable, but do not forget to add the broker\'s commission to the bill.\n")    
+        print("The sell would be profitable, but do not forget to add the broker\'s commission to the bill.\n")
+
 
 def data_for_lin_fit():
     """
@@ -63,21 +66,23 @@ def data_for_lin_fit():
     else:
         print('Number of business days in the period is:', days)
         print("")
-        print ("Retrieving share price and volume data for the selected period...\n")
+        print("Retrieving share price and volume data for the selected period...\n")
     historical_range_close = yf.download("IKA.L", date1, date2, interval="1d")['Close']
     historical_range_close.to_csv('ilika_selected_range_close.csv')
-    
+
+
 def validate_period(time_span):
     """
     The function generates an error message if the number of working days in a required period is 0 or negative.
     """
     try:
-        if time_span <= 0:        
+        if time_span <= 0:
             raise ValueError('Check your input. The number of working days in the period is 0 or negative')
     except ValueError as e:
         print(f"Invalid data: {e}, please try again.\n")
         return False
     return True
+
 
 def linear_regr():
     """
@@ -89,11 +94,11 @@ def linear_regr():
     day_number = []
     while i < len(list_close):
         i = i + 1
-        day_number.append(i)    
-    print("Running linear fit...\n")    
-    slope_close, intercept_close, r_close, p_close, std_err_close = stats.linregress(day_number, list_close)    
+        day_number.append(i)
+    print("Running linear fit...\n")
+    slope_close, intercept_close, r_close, p_close, std_err_close = stats.linregress(day_number, list_close)
     print("Checking applicability of linear model for selected range...\n")
-    r_close_abs = abs(r_close)    
+    r_close_abs = abs(r_close)
     if r_close_abs >= 0.7:
         print(f"Correlation coefficient is {r_close_abs}.\nFor numbers above 0.7 the model can be trusted.\nExtracting model parameters...\n")
         if slope_close <= 0:
@@ -106,16 +111,18 @@ def linear_regr():
             print("The market is bearish. Buying is not recommended, but the linear model is not suitable and other parameters must be checked.\n")
         else:
             print("The market is bullish. Selling is not recommended, but the linear model is not suitable and other parameters must be checked.\n")
-    
+
+
 def stay_or_exit():
     response = input("Would you like to contonue?\nType y or n and press ENTER...\n")
     if response == "y":
-        main()    
+        main()
     elif response == "n":
-        sys.exit("Exiting the code")    
+        sys.exit("Exiting the code")
     else:
         print("An answer is not recognised. The app will run again.\nYou can abort an execution by pressing Ctrl-C on Windows or Crts-Z on Linux.\n")
-        main()    
+        main()
+
 
 def main():
     """
@@ -128,11 +135,19 @@ def main():
     linear_regr()
     stay_or_exit()
 
-print("Welcome to the 'Equity Stock Pulse Check' project.\nThis little tool will calculate Return on Investment (ROI) for your Ilika Technologies Ltd share stock\nbased on the date of acquisition and current share price.\nIt will also suggest cell/buy strategy deduced from historical data range (defined by the user) of share price extrapolation.\nDISCLAIMER: The algorithm does not take into account unpredictable events, such as breaking news or paiment of dividends.\nTHE RESULTS CANNOT BE TREATED AS A LEGAL FINANCIAL ADVICE.\n")
+
+print("Welcome to the 'Equity Stock Pulse Check' project.\n")
+print("This little tool will calculate Return on Investment (ROI)\n")
+print("for your Ilika Technologies Ltd share stock\n")
+print("based on the date of acquisition and current share price.\n")
+print("It will also suggest cell/buy strategy.\n")
+print("DISCLAIMER: The algorithm does not take into account unpredictable\n")
+print("events, such as breaking news or paiment of dividends.\n")
+print("THE RESULTS CANNOT BE TREATED AS A LEGAL FINANCIAL ADVICE.\n")
 
 input('Press Enter to continue...\n')
 
-print("Retrieving the latest share price of Ilika Technologies Ltd.\nThis may take few seconds...\n")
+print("Retrieving the latest share price of Ilika Technologies Ltd...\n")
+print("This may take few seconds...\n")
 
 main()
-
