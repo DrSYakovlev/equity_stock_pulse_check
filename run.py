@@ -1,3 +1,5 @@
+print("Starting the program...\n")
+
 #Importing necessary modules and libraries:
 import yfinance as yf
 import numpy as np
@@ -18,7 +20,7 @@ def historical_data():
     """
     This function extracts the historical share price on the day of acquisition.
     """
-    acquisition_day = input('Enter the date of stock aquisition.\nThe date must be provided in a format  YYYY-MM-DD (e.g. 2024-01-05).\n')
+    acquisition_day = input('Enter the date of stock aquisition.\nThe date must be provided in a format  YYYY-MM-DD (e.g. 2024-01-05).\nEnterring incorrect data may result in a program crash.\n')
     print("Retrieving share price on that day...\n")
     acuisition_day_price = yf.download("IKA.L", 2010-5-14, acquisition_day)
     csv_export = acuisition_day_price.tail()  
@@ -41,25 +43,25 @@ def calculate_ROI(current_price, historical_share_price):
         print('You are loosing money, ROI is below 0, not a good day to sell.\n')
     else:
         print("")
-        print("The sell would be profitable, but do not forget to add the broker\'s commission to the bill\n")    
+        print("The sell would be profitable, but do not forget to add the broker\'s commission to the bill.\n")    
 
 def data_for_lin_fit():
     """
     The function selects the historical range of share price data for futher linear regression analysis.
     """
     while True:
-        date1 = input("Enter the first (the earliest) date in the period you want to analyse. The date must be entered in format yyyy-mm-dd (e.g. 2020-05-15)\n")
-        date2 = input("Enter the second (the latest) date in the period you want to analyse. The date must be entered in format yyyy-mm-dd (e.g. 2020-05-15)\n")
+        date1 = input("Enter the first (the earliest) date in the period you want to analyse.\nThe date must be entered in format yyyy-mm-dd (e.g. 2020-05-15).\nEnterring incorrect date may result in a program crash.\nThe program will issue an error message if you enter the latest date first.\n")
+        date2 = input("Enter the second (the latest) date in the period you want to analyse.\nThe date must be entered in format yyyy-mm-dd (e.g. 2020-05-15).\nEnterring incorrect date may result in a program crash.\nThe program will issue an error message if you enter the starting date instead.\n")
         days = np.busday_count(date1, date2)
         print(f"Specified period includes {days} market days.\n")
         if validate_period(days):
             break
     if days < 5:
-        print("The period is less than 5 days. The data are not enough for and the analysis may be unreliable. Suitable range is between 5 and 15 working days.\n")
+        print("The period is less than 5 days. The data are not enough and the analysis may be unreliable.\nSuitable range is between 5 and 15 working days.\n")
     if days > 20:
-        print("The selected period is long. The linear model may be disrupted by unpredictable events, such as dividend payment, company announcements, change of CEO and other major changes (consult www.ilika.com for the details).\n")
+        print("The selected period is long. The linear model may be disrupted by unpredictable events,\nsuch as dividend payment, company announcements, change of CEO and other major changes (consult www.ilika.com for the details).\n")
     else:
-        print('Number of business days is:', days)
+        print('Number of business days in the period is:', days)
         print("")
         print ("Retrieving share price and volume data for the selected period...\n")
     historical_range_close = yf.download("IKA.L", date1, date2, interval="1d")['Close']
@@ -71,7 +73,7 @@ def validate_period(time_span):
     """
     try:
         if time_span <= 0:        
-            raise ValueError(f'Check your input. The number of working days in the period is 0 or negative')
+            raise ValueError('Check your input. The number of working days in the period is 0 or negative')
     except ValueError as e:
         print(f"Invalid data: {e}, please try again.\n")
         return False
@@ -112,7 +114,7 @@ def stay_or_exit():
     elif response == "n":
         sys.exit("Exiting the code")    
     else:
-        print("An answer is not recognised. The app will run again.\nYou can abort an execution by pressing Ctrl-C on Windows or Crts-Z")
+        print("An answer is not recognised. The app will run again.\nYou can abort an execution by pressing Ctrl-C on Windows or Crts-Z on Linux.\n")
         main()    
 
 def main():
@@ -126,7 +128,7 @@ def main():
     linear_regr()
     stay_or_exit()
 
-print("Welcome to the 'Equity Stock Pulse Check' project.\nThis little tool will calculate Return on Investment (ROI) for your Ilika Technologies Ltd share stock based on the date of acquisition and current share price.\nIt will also suggest cell/buy strategy deduced from historical data range (defined by the user) of share price extrapolation.\nDISCLAIMER: The algorithm does not take into account unpredictable events, such as breaking news or paiment of dividends.\nTHE RESULTS CANNOT BE TREATED AS A LEGAL FINANCIAL ADVICE.\n")
+print("Welcome to the 'Equity Stock Pulse Check' project.\nThis little tool will calculate Return on Investment (ROI) for your Ilika Technologies Ltd share stock\nbased on the date of acquisition and current share price.\nIt will also suggest cell/buy strategy deduced from historical data range (defined by the user) of share price extrapolation.\nDISCLAIMER: The algorithm does not take into account unpredictable events, such as breaking news or paiment of dividends.\nTHE RESULTS CANNOT BE TREATED AS A LEGAL FINANCIAL ADVICE.\n")
 
 input('Press Enter to continue...\n')
 
