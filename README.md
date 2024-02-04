@@ -60,6 +60,12 @@ The code was supplied to PEP8 validator. The validator indicates few issues with
 
 The main bug the author could not fix in the context of this work is date format validation. There is an error message generator only testing the validity of time interval (period, e.g. negative or 0 number of business days). It seems that used library (yfinance) strictly adheres to its own format YYYY-MM-DD and generates an error if it is wrong. The warning message was added, but the program tends to break if the date format is incorrect. One way to fix the bug is to use html interface with py-script and input type = "date", where the framework would prevent enterring anything but date.
 
+### Last minute fix (temporary) of the bug
+
+As the last minute fix, the author has introduced a while loops which allow to double check and confirm the data (and re-enter if nesessary).
+
+![quick_fix](./images/patch_date_validation.jpg "date_validation")
+
 ## Plagiarism
 
 The author confirms that the project represents an origional work.

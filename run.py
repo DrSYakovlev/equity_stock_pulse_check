@@ -21,7 +21,12 @@ def historical_data():
     """
     This function extracts the historical share price on the day of acquisition.
     """
-    acquisition_day = input('Enter the date of stock aquisition.\nThe date must be provided in a format  YYYY-MM-DD (e.g. 2024-01-05).\nEnterring incorrect data may result in a program crash.\n')
+    confirm = None
+    while confirm != "y":
+        print('Enter the date of stock aquisition.\nThe date must be provided in a format  YYYY-MM-DD (e.g. 2024-01-05).\nEnterringincorrect data may result in a program crash.\n')
+        acquisition_day = input("\n")
+        print(f"Is the date {acquisition_day} correct? y/n")
+        confirm = input("\n")
     print("Retrieving share price on that day...\n")
     acuisition_day_price = yf.download("IKA.L", 2010-5-14, acquisition_day)
     csv_export = acuisition_day_price.tail()
@@ -53,11 +58,19 @@ def data_for_lin_fit():
     The function selects the historical range of share price data for futher linear regression analysis.
     """
     while True:
-        print("Enter the first (the earliest) date in the period you want to analyse.\nThe date must be entered in format yyyy-mm-dd (e.g. 2020-05-15).\nEnterring incorrect date may result in a program crash.\nThe program will issue an error message if you enter the latest date first.")
-        date1 = input("\n")
+        confirm = None
+        while confirm != "y":
+            print("Enter the first (the earliest) date in the period you want to analyse.\nThe date must be entered in format yyyy-mm-dd (e.g. 2020-05-15).\nEnterring incorrect date may result in a program crash.\nThe program will issue an error message if you enter the latest date first.")
+            date1 = input("\n")
+            print(f"Is the date {date1} correct? y/n")
+            confirm = input("\n")
         print("")
-        print("Enter the second (the latest) date in the period you want to analyse.\nThe date must be entered in format yyyy-mm-dd (e.g. 2020-05-15).\nEnterring incorrect date may result in a program crash.\nThe program will issue an error message if you enter the starting date instead.")
-        date2 = input("\n")
+        confirm = None
+        while confirm != "y":
+            print("Enter the second (the latest) date in the period you want to analyse.\nThe date must be entered in format yyyy-mm-dd (e.g. 2020-05-15).\nEnterring incorrect date may result in a program crash.\nThe program will issue an error message if you enter the starting date instead.")
+            date2 = input("\n")
+            print(f"Is the date {date2} correct? y/n")
+            confirm = input("\n")
         days = np.busday_count(date1, date2)
         print("")
         print(f"Specified period includes {days} market days.\n")
