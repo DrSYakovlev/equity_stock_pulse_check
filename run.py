@@ -1,4 +1,3 @@
-print("Starting the program...\n")
 #Importing necessary modules and libraries:
 import yfinance as yf
 import numpy as np
@@ -130,6 +129,9 @@ def linear_regr():
 
 
 def stay_or_exit():
+    """
+    Offers options: continue or leave program
+    """
     response = input("Would you like to contonue?\nType y or n and press ENTER...\n")
     if response == "y":
         main()
@@ -163,6 +165,7 @@ print("THE RESULTS CANNOT BE TREATED AS A LEGAL FINANCIAL ADVICE.\n")
 
 input('Press Enter to continue...\n')
 
+print("Starting the program...\n")
 print("Retrieving the latest share price of Ilika Technologies Ltd...\n")
 print("This may take few seconds...\n")
 

@@ -53,8 +53,7 @@ The code was manually tested by providing different dates and monitoring if the 
 
 The code was supplied to PEP8 validator. The validator indicates few issues with the code which the author is completely aware of:
 
-1. The first print() command appears above import block. It is done on purpose. It takes a while to retrieve the data from yfinance library. The user may get an impression the the code is frozen or stuck. I wanted to print the message that the step could take few seconds.
-2. Some strings in printed messages are two long. I supplied enough of "new line" characters to prevent broken words and keep text tidy.
+Some strings in printed messages are two long. I supplied enough of "new line" characters to prevent broken words and keep text tidy.
 
 ## Remaining bugs
 
