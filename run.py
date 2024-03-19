@@ -27,7 +27,7 @@ def date_input_validate():
     ipo = '2010-05-17'
     while True:
         print('Date format is YYYY-MM-DD (e.g. 2024-01-05):\n')
-        date = input("\n")
+        date = input('\n')
         print('\n')
         try:
             parse(date, fuzzy=False, yearfirst=True, dayfirst=False)
@@ -54,7 +54,7 @@ def historical_data(date):
     This function extracts a historical share price on the day of acquisition.
     """
     print("Retrieving historical share price...\n")
-    acquisition_date_price = yf.download("IKA.L", 2010-5-17, date)
+    acquisition_date_price = yf.download("IKA.L", 2010-5-17, date, progress=False)
     csv_export = acquisition_date_price.tail()
     csv_export.to_csv("ilika.csv")
     with open("ilika.csv", "r", encoding="utf-8", errors="ignore") as temp:
@@ -62,7 +62,6 @@ def historical_data(date):
     final_line = final_line.split(",")
     historical_share_price = float(final_line[5])
     print(f'Share price on {date} is: {int(historical_share_price)} p.\n')
-    # print(f'{int(historical_share_price)} p.\n')
     return historical_share_price
 
 
@@ -82,6 +81,7 @@ def calculate_ROI(current_price, historical_share_price):
         print('The sell would be profitable.\n')
         print('Do not forget to add broker\'s commission to the bill.\n')
     print('----------------------------------------\n')
+    input('Press Enter to continue...\n')
 
 
 def data_for_lin_fit():
@@ -89,14 +89,17 @@ def data_for_lin_fit():
     The function selects the historical range of share price
     data for futher linear regression analysis.
     """
+    print('You can now apply the linear regression fit\n')
+    print('to analyse stock behaviour in a specified period.\n')
+    print('The most reliable period duration is 5 to 15 market days')
+    print('------------------------------\n')
+    input('Press Enter to continue...\n')
     while True:
         print('Enter an initial date of period\n')
-        print('you want to analyse.\n')
-        # print('Date format is YYYY-MM-DD (e.g. 2024-01-05).\n')
+        print('you want to analyse.\n')        
         date_init = date_input_validate()
         print('Enter a final date of period\n')
-        print('you want to analyse.\n')
-        # print('Date format is YYYY-MM-DD (e.g. 2024-01-05).\n')
+        print('you want to analyse.\n')        
         date_end = date_input_validate()        
         days = np.busday_count(date_init, date_end)    
         print(f'Specified period includes {days} market days.\n')
@@ -116,7 +119,7 @@ def data_for_lin_fit():
     else:
         print('Retrieving historical share price for the selected period...\n')
     historical_range_close = yf.download("IKA.L", date_init,
-                                         date_end, interval="1d")['Close']
+                                         date_end, interval="1d", progress=False)['Close']
     historical_range_close.to_csv('ilika_selected_range_close.csv')
 
 
@@ -126,8 +129,8 @@ def validate_period(time_span):
     of working days in a required period is 0 or negative.
     """
     try:
-        if time_span <= 0:
-            raise ValueError('The number of market days is 0 or negative,\n')
+        if time_span <= 1:
+            raise ValueError('The number of market days is 1 or 0 or negative,\n')
     except ValueError as e:
         print(f'Invalid data: {e} please try again.\n')
         return False
@@ -140,6 +143,7 @@ def linear_regr():
     in function data_for_lin_fit() and converts it into the list format
     suitable for linear regression analysis.
     """
+    input('Press Enter to continue...\n')
     close = pandas.read_csv("ilika_selected_range_close.csv", header=0)
     list_close = list(close.Close)
     i = 0
@@ -205,6 +209,9 @@ print('Welcome to the "Equity Stock Pulse Check" project.\n')
 print('This little tool will calculate Return on Investment (ROI)\n')
 print('for your Ilika Technologies Ltd share stock\n')
 print('based on the date of acquisition and current share price.\n')
+
+input('Press Enter to continue...\n')
+
 print('It will also suggest sell/buy strategy.\n')
 print('DISCLAIMER: The algorithm uses linear regression and\n')
 print('does not take into account unpredictable\n')
