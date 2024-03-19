@@ -98,6 +98,8 @@ The deployment required the following steps:
 
 Deployment terminal and project template were provided by Code Institute.
 
+## Bugs and issues fixed after the submission
+
 
 
 

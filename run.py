@@ -1,10 +1,11 @@
 # Importing necessary modules and libraries:
+from datetime import datetime, date
+from dateutil.parser import parse
 import yfinance as yf
 import numpy as np
 import pandas
 import sys
 from scipy import stats
-
 
 def access_data():
     """
@@ -13,30 +14,55 @@ def access_data():
     ticker = yf.Ticker('IKA.L').info
     current_price = ticker['regularMarketPreviousClose']
     print(f'Current Ilika share price is...{current_price} p\n')
+    print('Enter the date of stock aquisition.\n')
     return current_price
 
+def date_input_validate():
+    """
+    Get the data from the user.
+    Validate data: i) check date format is correct
+    ii)  check if the date of the stock acquisition is in a correct period
+    (i.e. not before the IPO and not in the future). 
+    """    
+    ipo = '2010-05-17'
+    while True:
+        print('Date format is YYYY-MM-DD (e.g. 2024-01-05):\n')
+        date = input("\n")
+        print('\n')
+        try:
+            parse(date, fuzzy=False, yearfirst=True, dayfirst=False)
+            days = np.busday_count(date, datetime.today().strftime('%Y-%m-%d'))
+            range = np.busday_count(ipo, datetime.today().strftime('%Y-%m-%d'))
+            if days > 0 and days < range:
+                break
+            else:
+                print('Check the date format and period of acquisition.\n')
+                print('Must be between IPO and the most\n')
+                print('recent closed market day.\n')
+        except ValueError:
+            print('Invalid input. Try again.\n')
+        next_step = input('Enter y to continue, or any other key to quit.\n')
+        if next_step == 'y':
+            print('...\n')
+        else:
+            exit('Program stopped.\n')
+    return date
 
-def historical_data():
+
+def historical_data(date):
     """
     This function extracts a historical share price on the day of acquisition.
     """
-    confirm = None
-    while confirm != "y":
-        print('Enter the date of stock aquisition.\n')
-        print('Date format is YYYY-MM-DD (e.g. 2024-01-05).\n')
-        acquisition_day = input("\n")
-        print(f"Is the date {acquisition_day} correct? y/n\n")
-        confirm = input("\n")
-    print("Retrieving share price on that day...\n")
-    acuisition_day_price = yf.download("IKA.L", 2010-5-14, acquisition_day)
-    csv_export = acuisition_day_price.tail()
+    print("Retrieving historical share price...\n")
+    acquisition_date_price = yf.download("IKA.L", 2010-5-17, date)
+    csv_export = acquisition_date_price.tail()
     csv_export.to_csv("ilika.csv")
     with open("ilika.csv", "r", encoding="utf-8", errors="ignore") as temp:
         final_line = temp.readlines()[-1]
     final_line = final_line.split(",")
     historical_share_price = float(final_line[5])
-    print(f"Share price on {acquisition_day} is:\n")
-    print(f"{int(historical_share_price)} p.\n")
+    print(f'Share price on {date} is: {int(historical_share_price)} p.\n')
+    # print(f'{int(historical_share_price)} p.\n')
     return historical_share_price
 
 
@@ -48,15 +74,14 @@ def calculate_ROI(current_price, historical_share_price):
     return_on_investment = int((current_price -
                                 historical_share_price) * 100
                                / historical_share_price)
-    print(f'Today\'s ROI would be {return_on_investment}%\n')
+    print(f'Today\'s ROI would be: {return_on_investment}%\n')
     if return_on_investment <= 0:
-        print('\n')
         print('You are loosing money.\n')
         print('ROI is below 0, not a good day to sell.\n')
     else:
-        print('\n')
         print('The sell would be profitable.\n')
         print('Do not forget to add broker\'s commission to the bill.\n')
+    print('----------------------------------------\n')
 
 
 def data_for_lin_fit():
@@ -65,27 +90,15 @@ def data_for_lin_fit():
     data for futher linear regression analysis.
     """
     while True:
-        confirm = None
-        while confirm != 'y':
-            print('Enter the starting date in a period you want to check.\n')
-            print('Date format is yyyy-mm-dd (e.g. 2020-05-15).\n')
-            print('The program will issue an error message\n')
-            print('if you enter the latest date first.\n')
-            date1 = input('\n')
-            print(f'Is the date {date1} correct? y/n')
-            confirm = input('\n')
-        print('\n')
-        confirm = None
-        while confirm != 'y':
-            print('Enter the ending date in the period you want to check.\n')
-            print('Date format is yyyy-mm-dd (e.g. 2020-05-15).\n')
-            print('The program will issue an error message\n')
-            print('if you enter the starting or earlier date instead.\n')
-            date2 = input("\n")
-            print(f"Is the date {date2} correct? y/n")
-            confirm = input("\n")
-        days = np.busday_count(date1, date2)
-        print('\n')
+        print('Enter an initial date of period\n')
+        print('you want to analyse.\n')
+        # print('Date format is YYYY-MM-DD (e.g. 2024-01-05).\n')
+        date_init = date_input_validate()
+        print('Enter a final date of period\n')
+        print('you want to analyse.\n')
+        # print('Date format is YYYY-MM-DD (e.g. 2024-01-05).\n')
+        date_end = date_input_validate()        
+        days = np.busday_count(date_init, date_end)    
         print(f'Specified period includes {days} market days.\n')
         if validate_period(days):
             break
@@ -93,7 +106,7 @@ def data_for_lin_fit():
         print('The period is less than 5 days. Not enough data.\n')
         print('Suitable range is between 5 and 15 working days.\n')
         print('The linear analysis may be unreliable.\n')
-    if days > 20:
+    elif days > 20:
         print('The selected period is long.\n')
         print('Suitable range is between 5 and 15 working days.\n')
         print('The linear model may be disrupted by unpredictable events\n')
@@ -101,10 +114,9 @@ def data_for_lin_fit():
         print('missed financial targets or change of CEO.\n')
         print('(consult www.ilika.com for updates).\n')
     else:
-        print('\n')
         print('Retrieving historical share price for the selected period...\n')
-    historical_range_close = yf.download("IKA.L", date1,
-                                         date2, interval="1d")['Close']
+    historical_range_close = yf.download("IKA.L", date_init,
+                                         date_end, interval="1d")['Close']
     historical_range_close.to_csv('ilika_selected_range_close.csv')
 
 
@@ -115,9 +127,9 @@ def validate_period(time_span):
     """
     try:
         if time_span <= 0:
-            raise ValueError('The number of market days is 0 or negative.\n')
+            raise ValueError('The number of market days is 0 or negative,\n')
     except ValueError as e:
-        print(f'Invalid data: {e}, please try again.\n')
+        print(f'Invalid data: {e} please try again.\n')
         return False
     return True
 
@@ -136,8 +148,7 @@ def linear_regr():
         i = i + 1
         day_number.append(i)
     print('Running linear fit...\n')
-    slope_close, intercept_close, r_close, p_close, \
-        std_err_close = stats.linregress(day_number, list_close)
+    slope_close, intercept_close, r_close, p_close, std_err_close = stats.linregress(day_number, list_close)
     print('Checking applicability of linear model for selected range...\n')
     r_close_abs = abs(r_close)
     if r_close_abs >= 0.7:
@@ -182,20 +193,22 @@ def main():
     Run all program functions.
     """
     current_price = access_data()
-    historical_share_price = historical_data()
+    date_of_acquisition = date_input_validate()
+    historical_share_price = historical_data(date_of_acquisition)
     calculate_ROI(current_price, historical_share_price)
     data_for_lin_fit()
     linear_regr()
     stay_or_exit()
 
 
-print('Welcome to the "Equity Stock Pulse Check2 project.\n')
+print('Welcome to the "Equity Stock Pulse Check" project.\n')
 print('This little tool will calculate Return on Investment (ROI)\n')
 print('for your Ilika Technologies Ltd share stock\n')
 print('based on the date of acquisition and current share price.\n')
 print('It will also suggest sell/buy strategy.\n')
-print('DISCLAIMER: The algorithm does not take into account unpredictable\n')
-print('events, such as breaking news or paiment of dividends.\n')
+print('DISCLAIMER: The algorithm uses linear regression and\n')
+print('does not take into account unpredictable\n')
+print('events, such as breaking news or payment of dividends.\n')
 print('THE RESULTS CANNOT BE TREATED AS A LEGAL FINANCIAL ADVICE.\n')
 
 input('Press Enter to continue...\n')
