@@ -61,6 +61,7 @@ def historical_data(date):
         final_line = temp.readlines()[-1]
     final_line = final_line.split(",")
     historical_share_price = float(final_line[5])
+    print('========================================\n')
     print(f'Share price on {date} is: {int(historical_share_price)} p.\n')
     return historical_share_price
 
@@ -92,7 +93,7 @@ def data_for_lin_fit():
     print('You can now apply the linear regression fit\n')
     print('to analyse stock behaviour in a specified period.\n')
     print('The most reliable period duration is 5 to 15 market days')
-    print('------------------------------\n')
+    print('----------------------------------------\n')
     input('Press Enter to continue...\n')
     while True:
         print('Enter an initial date of period\n')
@@ -143,6 +144,7 @@ def linear_regr():
     in function data_for_lin_fit() and converts it into the list format
     suitable for linear regression analysis.
     """
+    print('========================================\n')
     input('Press Enter to continue...\n')
     close = pandas.read_csv("ilika_selected_range_close.csv", header=0)
     list_close = list(close.Close)
