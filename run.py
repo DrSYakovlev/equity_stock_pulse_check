@@ -1,11 +1,15 @@
 # Importing necessary modules and libraries:
 from datetime import datetime, date
 from dateutil.parser import parse
+import warnings
 import yfinance as yf
 import numpy as np
 import pandas
 import sys
 from scipy import stats
+
+warnings.simplefilter('ignore')
+
 
 def access_data():
     """
@@ -54,6 +58,7 @@ def historical_data(date):
     This function extracts a historical share price on the day of acquisition.
     """
     print("Retrieving historical share price...\n")
+    
     acquisition_date_price = yf.download("IKA.L", 2010-5-17, date, progress=False)
     csv_export = acquisition_date_price.tail()
     csv_export.to_csv("ilika.csv")
@@ -91,8 +96,8 @@ def data_for_lin_fit():
     data for futher linear regression analysis.
     """
     print('You can now apply the linear regression fit\n')
-    print('to analyse stock behaviour in a specified period.\n')
-    print('The most reliable period duration is 5 to 15 market days')
+    print('to analyse the stock behaviour in a specified period.\n')
+    print('The most reliable period duration is 5 to 15 market days.')
     print('----------------------------------------\n')
     input('Press Enter to continue...\n')
     while True:
@@ -182,7 +187,7 @@ def stay_or_exit():
     """
     Offers options: continue or leave program.
     """
-    print('Would you like to contonue?\n')
+    print('Would you like to continue?\n')
     response = input('Type y or n and press ENTER...\n')
     if response == "y":
         main()
@@ -192,12 +197,16 @@ def stay_or_exit():
         print('The answer is not recognised. The app will run again.\n')
         print('Abort by pressing Ctrl-C on Windows or Crts-Z on Linux.\n')
         main()
+    
+
+    
 
 
 def main():
     """
     Run all program functions.
     """
+    warnings.simplefilter('ignore')
     current_price = access_data()
     date_of_acquisition = date_input_validate()
     historical_share_price = historical_data(date_of_acquisition)
