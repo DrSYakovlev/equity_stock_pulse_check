@@ -126,7 +126,7 @@ and setting the yf.download() progress= attribute to 'False'.
 
 
 #### 3. Other changes.
-The previous version generated several PEP-8 messages due to excessively long lines, missed double-lines between the function definitions under/over-indented lines and trailing space characters. The present version passes PEP-8 Linter validation with no issues:
+The previous version generated several PEP-8 messages due to excessively long lines, missed double-lines between the function definitions, under/over-indented lines and trailing space characters. The present version passes PEP-8 Linter validation with no issues:
 
 ![pep-8_validation](./images/PEP-8_validator.jpg "pep-8_validation")
 

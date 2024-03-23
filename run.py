@@ -209,7 +209,6 @@ def stay_or_exit():
         sys.exit('Exiting the code. See you later.\n')
     else:
         print('The answer is not recognised. The app will run again.\n')
-        print('Abort by pressing Ctrl-C on Windows or Crts-Z on Linux.\n')
         main()
 
 
