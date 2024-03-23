@@ -1,4 +1,5 @@
 # Importing necessary modules and libraries:
+import re
 from datetime import datetime, date
 from dateutil.parser import parse
 import warnings
@@ -31,9 +32,15 @@ def date_input_validate():
     """
     ipo = '2010-05-17'
     while True:
-        print('Date format is YYYY-MM-DD (e.g. 2024-01-05):\n')
-        date = input('\n')
-        print('\n')
+        while True:
+            print('Date format is YYYY-MM-DD (e.g. 2024-01-05):\n')
+            date = input('\n')
+            print('\n')
+            if re.match(r'^\d{4}-\d{2}-\d{2}', date):
+                break
+            else:
+                print('Wrong format.\n')
+                stay_or_exit()
         try:
             parse(date, fuzzy=False, yearfirst=True, dayfirst=False)
             days = np.busday_count(date, datetime.today().strftime('%Y-%m-%d'))
