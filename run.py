@@ -138,8 +138,7 @@ def validate_period(time_span):
     """
     try:
         if time_span <= 1:
-            raise ValueError('The number of market days\
-                             is 1 or 0 or negative,\n')
+            raise ValueError('The no. of market days is 1 or 0 or negative,\n')
     except ValueError as e:
         print(f'Invalid data: {e} please try again.\n')
         return False
