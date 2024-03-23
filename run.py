@@ -40,7 +40,11 @@ def date_input_validate():
                 break
             else:
                 print('Wrong format.\n')
-                stay_or_exit()
+                want_quit = input('Enter any key to stay or q to quit.\n')
+                if want_quit == 'q':
+                    sys.exit('Program stopped, see you later.\n')
+                else:
+                    print('Try again.')
         try:
             parse(date, fuzzy=False, yearfirst=True, dayfirst=False)
             days = np.busday_count(date, datetime.today().strftime('%Y-%m-%d'))
@@ -74,7 +78,7 @@ def historical_data(date):
         final_line = temp.readlines()[-1]
     final_line = final_line.split(",")
     historical_share_price = float(final_line[5])
-    print('========================================\n')
+    print('----------------------------------------\n')
     print(f'Share price on {date} is: {int(historical_share_price)} p.\n')
     return historical_share_price
 
@@ -158,7 +162,7 @@ def linear_regr():
     in function data_for_lin_fit() and converts it into the list format
     suitable for linear regression analysis.
     """
-    print('========================================\n')
+    print('----------------------------------------\n')
     input('Press Enter to continue...\n')
     close = pandas.read_csv("ilika_selected_range_close.csv", header=0)
     list_close = list(close.Close)
@@ -197,7 +201,7 @@ def stay_or_exit():
     """
     Offers options: continue or leave program.
     """
-    print('Would you like to continue?\n')
+    print('Would you like to start over?\n')
     response = input('Type y or n and press ENTER...\n')
     if response == "y":
         main()

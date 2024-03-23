@@ -94,11 +94,46 @@ The deployment required the following steps:
 4. Link Heroku with GitHub repo.
 5. Deploy (Automatic deployment option was selected).
         
-## Credits
+### Credits
 
 Deployment terminal and project template were provided by Code Institute.
 
-## Bugs and issues fixed after the submission
+## Bugs and issues fixed after the submission (new in re-submitted version )
+
+In the previous version, two main bugs were identified. In this latest version of the code these two bugs were fixed.
+
+#### 1. Date input validation.
+In the previous version, lack of validation was causing the code to crush in the case of invalid or empty user input. In this version, three-step validation was introduced, using a combination of a while loop and error handling structure (try-except).
+##### Stage 1:
+Check if the input date string matches the required format (YYYY-mm-dd), using while loop and re.match() method.
+
+![string_format_validation](./images/string_format_validation.jpg "string_format_validation")
+
+##### Stage 2:
+Then the program checks if the string is actually a day using a parse method of dateutil library. The code also checks if the date is in the period between the IPO and latest closed market day.
+##### Stage 3:
+When the user is primpted to enter the period for linear regression analysis, the code makes use of try-except error handler to make sure that the initial date is provided before the final date (not the other way around) and the period includes 2 or more closed market days:
+![period_validation](./images/period_validation.jpg "period_validation")
+
+Validation stages 1 and 2 are combined in the date_input_validate() function. Stage 3 is a separate validate_period() function.
+
+
+#### 2. Warning messages and usage of progress bars from yfinance external library.
+The previous version was generating distructing warning messages and progress indicators during the communication with yfinance library. Suppressed by introducing warnings.simplefilter('ignore')
+and setting the yf.download() progress= attribute to false.
+
+
+#### 3. Other changes.
+The previous version generated several PEP-8 messages due to excessively long lines, missed double-lines between the function definitions under/over-indented lines and trailing space characters. The present version passes PEP-8 Linter validation with no issues:
+
+![pep-8_validation](./images/PEP-8_validator.jpg "pep-8_validation")
+
+The code is now structured into more easily readable fragments by using 'Press enter...' inputs and page breaks '-----------' to prevent screen overflow.
+
+
+
+
+
 
 
 
