@@ -21,13 +21,14 @@ def access_data():
     print('Enter the date of stock aquisition.\n')
     return current_price
 
+
 def date_input_validate():
     """
     Get the data from the user.
     Validate data: i) check date format is correct
     ii)  check if the date of the stock acquisition is in a correct period
-    (i.e. not before the IPO and not in the future). 
-    """    
+    (i.e. not before the IPO and not in the future).
+    """
     ipo = '2010-05-17'
     while True:
         print('Date format is YYYY-MM-DD (e.g. 2024-01-05):\n')
@@ -58,8 +59,8 @@ def historical_data(date):
     This function extracts a historical share price on the day of acquisition.
     """
     print("Retrieving historical share price...\n")
-    
-    acquisition_date_price = yf.download("IKA.L", 2010-5-17, date, progress=False)
+    acquisition_date_price = yf.download("IKA.L",
+                                         2010-5-17, date, progress=False)
     csv_export = acquisition_date_price.tail()
     csv_export.to_csv("ilika.csv")
     with open("ilika.csv", "r", encoding="utf-8", errors="ignore") as temp:
@@ -102,12 +103,12 @@ def data_for_lin_fit():
     input('Press Enter to continue...\n')
     while True:
         print('Enter an initial date of period\n')
-        print('you want to analyse.\n')        
+        print('you want to analyse.\n')
         date_init = date_input_validate()
         print('Enter a final date of period\n')
-        print('you want to analyse.\n')        
-        date_end = date_input_validate()        
-        days = np.busday_count(date_init, date_end)    
+        print('you want to analyse.\n')
+        date_end = date_input_validate()
+        days = np.busday_count(date_init, date_end)
         print(f'Specified period includes {days} market days.\n')
         if validate_period(days):
             break
@@ -125,7 +126,8 @@ def data_for_lin_fit():
     else:
         print('Retrieving historical share price for the selected period...\n')
     historical_range_close = yf.download("IKA.L", date_init,
-                                         date_end, interval="1d", progress=False)['Close']
+                                         date_end, interval="1d",
+                                         progress=False)['Close']
     historical_range_close.to_csv('ilika_selected_range_close.csv')
 
 
@@ -136,7 +138,8 @@ def validate_period(time_span):
     """
     try:
         if time_span <= 1:
-            raise ValueError('The number of market days is 1 or 0 or negative,\n')
+            raise ValueError('The number of market days\
+                             is 1 or 0 or negative,\n')
     except ValueError as e:
         print(f'Invalid data: {e} please try again.\n')
         return False
@@ -159,7 +162,8 @@ def linear_regr():
         i = i + 1
         day_number.append(i)
     print('Running linear fit...\n')
-    slope_close, intercept_close, r_close, p_close, std_err_close = stats.linregress(day_number, list_close)
+    slope_close, intercept_close, r_close, p_close,\
+        std_err_close = stats.linregress(day_number, list_close)
     print('Checking applicability of linear model for selected range...\n')
     r_close_abs = abs(r_close)
     if r_close_abs >= 0.7:
@@ -179,7 +183,7 @@ def linear_regr():
             print('Other parameters must be checked.\n')
         else:
             print('The market is bullish.\n')
-            print('Selling is not advised, but the model is not suitable\n')
+            print('Selling is not advised, but the model is not suitable.\n')
             print('Other parameters must be checked.\n')
 
 
@@ -197,9 +201,6 @@ def stay_or_exit():
         print('The answer is not recognised. The app will run again.\n')
         print('Abort by pressing Ctrl-C on Windows or Crts-Z on Linux.\n')
         main()
-    
-
-    
 
 
 def main():
