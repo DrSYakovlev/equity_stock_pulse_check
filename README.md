@@ -110,17 +110,19 @@ Check if the input date string matches the required format (YYYY-mm-dd), using w
 ![string_format_validation](./images/string_format_validation.jpg "string_format_validation")
 
 ##### Stage 2:
-Then the program checks if the string is actually a day using a parse method of dateutil library. The code also checks if the date is in the period between the IPO and latest closed market day.
+Then the program checks if the string is actually a date using a parse method of dateutil library. The code also checks if the date is in the period between the IPO and latest closed market day.
+
 ##### Stage 3:
-When the user is primpted to enter the period for linear regression analysis, the code makes use of try-except error handler to make sure that the initial date is provided before the final date (not the other way around) and the period includes 2 or more closed market days:
+When the user is prompted to enter the period for linear regression analysis, the code makes use of try-except error handler to make sure that the initial date is provided before the final date (not the other way around) and the period includes 2 or more closed market days:
+
 ![period_validation](./images/period_validation.jpg "period_validation")
 
 Validation stages 1 and 2 are combined in the date_input_validate() function. Stage 3 is a separate validate_period() function.
 
 
 #### 2. Warning messages and usage of progress bars from yfinance external library.
-The previous version was generating distructing warning messages and progress indicators during the communication with yfinance library. Suppressed by introducing warnings.simplefilter('ignore')
-and setting the yf.download() progress= attribute to false.
+The previous version was generating distracting/code-breaking warning messages and progress indicators during the communication with yfinance library. Suppressed by introducing warnings.simplefilter('ignore')
+and setting the yf.download() progress= attribute to 'False'.
 
 
 #### 3. Other changes.
