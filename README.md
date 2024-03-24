@@ -119,6 +119,18 @@ When the user is prompted to enter the period for linear regression analysis, th
 
 Validation stages 1 and 2 are combined in the date_input_validate() function. Stage 3 is a separate validate_period() function.
 
+Validation of user input was done by passing:
+- Empty string
+- Random sring
+- Incomplete date
+- Wrong date format
+- Date prior to IPO
+- Future date
+- In the case of data analysis for the selected period, the initial and final dates were deliberately swapped.
+- Correct date input.
+
+Only the correct date was accepted. In the case of the incorrect input, the user can retry or exit.
+
 
 #### 2. Warning messages and usage of progress bars from yfinance external library.
 The previous version was generating distracting/code-breaking warning messages and progress indicators during the communication with yfinance library. Suppressed by introducing warnings.simplefilter('ignore')
